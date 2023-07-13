@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 export default function Users() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState();
+  console.log();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_SERVER_DOMAIN}/users`)
