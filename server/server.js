@@ -88,6 +88,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/auth/check", (req, res) => {
+  console.log(req.user, "Req.User");
   try {
     if (req.isAuthenticated()) {
       res.send(true);
