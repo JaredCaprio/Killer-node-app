@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
 export default function Tricks() {
-  const tableStyles = { border: "1px solid black", padding: "4rem" };
+  const styles = {
+    table: {
+      border: "1px solid black",
+      padding: "4rem",
+      margin: "auto",
+    },
+  };
 
   const [tricks, setTricks] = useState();
   const [newTrick, setNewTrick] = useState({
@@ -63,15 +69,15 @@ export default function Tricks() {
       </form>
 
       <>
-        <table style={tableStyles}>
-          <thead style={tableStyles}>
+        <table style={styles.table}>
+          <thead>
             <tr>
               <th>Name</th>
               <th>Difficulty</th>
               <th>Grip</th>
             </tr>
           </thead>
-          <tbody style={tableStyles}>
+          <tbody>
             {tricks?.map((trick, i) => (
               <tr key={i}>
                 <td>{trick.name}</td>
