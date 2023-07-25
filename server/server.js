@@ -2,21 +2,115 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 require("dotenv").config();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 const cors = require("cors");
+const connectDb = require("./config/db");
+const mongoose = require("mongoose");
+const Trick = require("./models/Trick");
+const passport = require("passport");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const { ensureAuth } = require("./middleware/auth");
+
+//json config
+app.use(express.json());
 
 //Enable Cors
-app.use(cors());
+app.use(
+  cors({
+    origin: `${process.env.CLIENT_DOMAIN}`,
+    credentials: true,
+  })
+);
+//db connection
+connectDb();
+
+//passport config
+require("./config/passport")(passport);
+
+//sessions middleware
+app.use(
+  session({
+    secret: "foo",
+    saveUninitialized: false,
+    resave: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+      stringify: false,
+    }),
+    cookie: {
+      maxAge: 1209600,
+    },
+  })
+);
+
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to the Killer Node App</h1>");
 });
 
-app.get("/users", (req, res) => {
-  res.json([
-    { name: "bob", age: 59, id: 2 },
-    { name: "Tommy", age: 69, id: 1 },
-  ]);
+app.get("/tricks", async (req, res) => {
+  const tricks = await Trick.find({});
+  res.json(tricks);
+});
+
+//Auth routes
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    successRedirect: `${process.env.CLIENT_DOMAIN}/`,
+  }),
+  (req, res) => {
+    console.log(req);
+  }
+);
+
+//logout Route
+
+app.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      res.json(false);
+      return next(err);
+    }
+  });
+  res.json(true);
+});
+
+app.get("/auth/check", (req, res) => {
+  try {
+    if (req.isAuthenticated()) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (error) {
+    console.error(error);
+    res.send(false);
+  }
+});
+
+//CRUD routes
+
+app.post("/addTrick", async (req, res) => {
+  try {
+    console.log(req.body);
+    const newTrick = await Trick.create(req.body);
+    res.status(201).json({ mes: "trick added" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error, bitch!" });
+  }
 });
 
 app.listen(PORT, () => {

@@ -1,16 +1,36 @@
 import { Outlet } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function RootLayout() {
+  const navigate = useNavigate();
+  const logout = () => {
+    fetch(`${import.meta.env.VITE_SERVER_DOMAIN}/logout`, {
+      credentials: "include",
+    })
+      .then((res) => {
+        res.json();
+      })
+      .then((data) => {
+        if (data) {
+          navigate("/login");
+          window.location.reload();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div>
       <nav>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/home">Home</Link>
           </li>
           <li>
-            <Link to="/users">Users</Link>
+            <Link to="/tricks">Tricks</Link>
+          </li>
+          <li>
+            <div onClick={() => logout()}>Logout</div>
           </li>
         </ul>
       </nav>

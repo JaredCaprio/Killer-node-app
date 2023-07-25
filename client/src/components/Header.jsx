@@ -4,7 +4,7 @@ export default function Header() {
       <nav>
         <ul>
           <li>Home</li>
-          <li>Users</li>
+          <li>Tricks</li>
         </ul>
       </nav>
     </div>

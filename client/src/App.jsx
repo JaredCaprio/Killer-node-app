@@ -6,15 +6,38 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import Home from "./components/Home";
-import Users from "./components/Users";
 import RootLayout from "./layouts/RootLayout";
+import Login from "./components/Login";
+import Tricks from "./components/Tricks";
+import { AuthProvider } from "./auth/UserContext";
+import EnsureAuth from "./auth/EnsureAuth";
+import EnsureGuest from "./auth/EnsureGuest";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<RootLayout />}>
-        <Route index element={<Home />} exact />
-        <Route path="/users" element={<Users />} exact />
+      <Route>
+        <Route
+          path="login"
+          element={
+            <EnsureGuest>
+              <Login />
+            </EnsureGuest>
+          }
+          exact
+        />
+        <Route
+          path="/"
+          element={
+            <EnsureAuth>
+              <RootLayout />
+            </EnsureAuth>
+          }
+        >
+          <Route path="home" element={<Home />} exact />
+
+          <Route path="tricks" element={<Tricks />} exact />
+        </Route>
       </Route>
     )
   );
@@ -22,7 +45,9 @@ function App() {
   return (
     <>
       <div className="App">
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
       </div>
     </>
   );
