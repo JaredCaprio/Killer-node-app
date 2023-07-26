@@ -42,6 +42,8 @@ app.use(
     }),
     cookie: {
       domain: process.env.COOKIE_DOMAIN,
+      secure: true,
+      sameSite: "none",
     },
   })
 );
