@@ -41,10 +41,7 @@ app.use(
       stringify: false,
     }),
     cookie: {
-      domain: ".onrender.com",
-      sameSite: "none",
-      secure: true,
-      maxAge: 60 * 60 * 24 * 7,
+      domain: process.env.COOKIE_DOMAIN,
     },
   })
 );
