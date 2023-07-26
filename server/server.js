@@ -20,7 +20,8 @@ app.use(
   cors({
     origin: `${process.env.CLIENT_DOMAIN}`,
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["POST", "GET", "DELETE", "PUT"],
+    exposedHeaders: ["set-cookie"],
   })
 );
 //db connection
@@ -46,7 +47,6 @@ app.use(
     cookie: {
       domain: process.env.COOKIE_DOMAIN,
       httpOnly: true,
-      secure: true,
       sameSite: "none",
     },
   })
