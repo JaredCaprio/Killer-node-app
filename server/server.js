@@ -29,6 +29,8 @@ connectDb();
 //passport config
 require("./config/passport")(passport);
 
+app.set("trust proxy", 1);
+
 //sessions middleware
 app.use(
   session({
@@ -40,8 +42,12 @@ app.use(
       collectionName: "sessions",
       stringify: false,
     }),
+    proxy: true,
     cookie: {
       domain: process.env.COOKIE_DOMAIN,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
     },
   })
 );
