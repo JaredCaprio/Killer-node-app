@@ -42,11 +42,12 @@ app.use(
       collectionName: "sessions",
       stringify: false,
     }),
+    name: "killer-node-app",
     proxy: true,
     cookie: {
       domain: process.env.COOKIE_DOMAIN,
       httpOnly: true,
-      secure: true,
+      /* secure: true, */
       sameSite: "none",
     },
   })
