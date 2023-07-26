@@ -20,6 +20,7 @@ app.use(
   cors({
     origin: `${process.env.CLIENT_DOMAIN}`,
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 //db connection
@@ -39,6 +40,11 @@ app.use(
       collectionName: "sessions",
       stringify: false,
     }),
+    cookie: {
+      maxAge: 60 * 60 * 24 * 10,
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
 
