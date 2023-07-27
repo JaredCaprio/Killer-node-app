@@ -56,10 +56,6 @@ app.use(
       stringify: false,
     }),
     name: "killer-node-app",
-    cookie: {
-      domain: process.env.COOKIE_DOMAIN,
-      httpOnly: true,
-    },
   })
 );
 
