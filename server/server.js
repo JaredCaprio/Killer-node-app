@@ -32,8 +32,8 @@ app.use(
   cors({
     origin: `${process.env.CLIENT_DOMAIN}`,
     credentials: true,
-    methods: ["POST", "GET", "DELETE", "PUT"],
-    exposedHeaders: ["set-cookie"],
+    /*  methods: ["POST", "GET", "DELETE", "PUT"],
+    exposedHeaders: ["set-cookie"], */
   })
 );
 //db connection
@@ -42,7 +42,7 @@ connectDb();
 //passport config
 require("./config/passport")(passport);
 
-app.set("trust proxy", 1);
+/* app.set("trust proxy", 1); */
 
 //sessions middleware
 app.use(
@@ -69,6 +69,7 @@ app.get("/", (req, res) => {
 
 app.get("/tricks", async (req, res) => {
   const tricks = await Trick.find({});
+  res.setHeader("set-cookie", "foo=bar");
   res.json(tricks);
 });
 
@@ -82,10 +83,11 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login",
-    successRedirect: `${process.env.CLIENT_DOMAIN}/`,
   }),
   (req, res) => {
     console.log(req);
+    res.cookie("foo", "my butt", {});
+    res.redirect(`${process.env.CLIENT_DOMAIN}/`);
   }
 );
 
@@ -111,7 +113,7 @@ app.get("/auth/check", (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.send(false);
+    res.cookie("well", "shit bitch").send(false);
   }
 });
 
@@ -126,6 +128,11 @@ app.post("/addTrick", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "There was an error, bitch!" });
   }
+});
+
+app.get("/setcookie", (req, res) => {
+  res.cookie("foo", "bar");
+  res.send("cookie is set babby boy");
 });
 
 app.listen(PORT, () => {

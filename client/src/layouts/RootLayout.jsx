@@ -8,7 +8,7 @@ export default function RootLayout() {
       credentials: "include",
     })
       .then((res) => {
-        res.json();
+        return res.json();
       })
       .then((data) => {
         if (data) {
