@@ -56,6 +56,12 @@ app.use(
       stringify: false,
     }),
     name: "killer-node-app",
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+      domain: process.env.COOKIE_DOMAIN,
+    },
   })
 );
 
@@ -85,8 +91,6 @@ app.get(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    console.log(req);
-    res.cookie("foo", "my butt", {});
     res.redirect(`${process.env.CLIENT_DOMAIN}/`);
   }
 );
@@ -113,7 +117,7 @@ app.get("/auth/check", (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    res.cookie("well", "shit bitch").send(false);
+    res.send(false);
   }
 });
 
