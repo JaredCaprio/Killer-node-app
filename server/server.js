@@ -15,18 +15,6 @@ const { ensureAuth } = require("./middleware/auth");
 //json config
 app.use(express.json());
 
-//headers
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
-  );
-  next();
-});
-
 //Enable Cors
 app.use(
   cors({
@@ -42,7 +30,7 @@ connectDb();
 //passport config
 require("./config/passport")(passport);
 
-/* app.set("trust proxy", 1); */
+app.set("trust proxy", 1);
 
 //sessions middleware
 app.use(
@@ -57,8 +45,8 @@ app.use(
     }),
     name: "killer-node-app",
     cookie: {
-      sameSite: "none",
-      secure: true,
+      sameSite: "strict",
+      /*  secure: true, */
       httpOnly: true,
       domain: process.env.COOKIE_DOMAIN,
     },
@@ -75,7 +63,6 @@ app.get("/", (req, res) => {
 
 app.get("/tricks", async (req, res) => {
   const tricks = await Trick.find({});
-  res.setHeader("set-cookie", "foo=bar");
   res.json(tricks);
 });
 
@@ -132,11 +119,6 @@ app.post("/addTrick", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "There was an error, bitch!" });
   }
-});
-
-app.get("/setcookie", (req, res) => {
-  res.cookie("foo", "bar");
-  res.send("cookie is set babby boy");
 });
 
 app.listen(PORT, () => {
